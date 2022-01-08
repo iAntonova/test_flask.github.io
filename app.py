@@ -1,13 +1,16 @@
 from enum import unique
 from flask import Flask, render_template, flash, request
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError, IntegerField
 from wtforms import validators
+from wtforms.fields.simple import PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
+from datetime import date
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, migrate
 from werkzeug.security import generate_password_hash, check_password_hash
+from wtforms.widgets import TextArea
 
 
 # Create a Flask Instance
@@ -61,6 +64,66 @@ class PasswordForm(FlaskForm):
     email = StringField("What's Your Email", validators=[DataRequired()])
     password_hash = PasswordField("What's Your Password", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
+
+# Create a Route Model
+class Routes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    truck_id = db.Column(db.Integer)
+    driver = db.Column(db.String(255))
+    customer = db.Column(db.String(255))
+    loading = db.Column(db.String(255))
+    unloading = db.Column(db.String(255))
+    received = db.Column(db.Integer)
+    price = db.Column(db.Integer)
+    payment = db.Column(db.String(15))
+    debt = db.Column(db.Integer)
+    comment = db.Column(db.Text)
+    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    
+# Create a Routes Form
+class RouteForm(FlaskForm):
+    truck_id = IntegerField("Truck id", validators=[DataRequired()])
+    driver = StringField("Driver", validators=[DataRequired()])
+    customer = StringField("Customer", validators=[DataRequired()])
+    loading = StringField("Loading point", validators=[DataRequired()])
+    unloading = StringField("Unloading point", validators=[DataRequired()])
+    received = IntegerField("Received amount", validators=[DataRequired()])
+    price = IntegerField("Shipping price", validators=[DataRequired()])
+    payment = StringField("Payment", validators=[DataRequired()])
+    debt = IntegerField("Debt", validators=[DataRequired()])
+    comment = StringField("Comment", validators=[DataRequired()], widget=TextArea())
+    submit = SubmitField("Submit")
+
+# Add Post Page
+@app.route('/add-route', methods=['GET', 'POST'])
+def add_route():
+    form = RouteForm()
+
+    if form.validate_on_submit():
+        route = Routes(truck_id=form.truck_id.data, driver=form.driver.data, customer=form.customer.data, loading=form.loading.data, unloading=form.unloading.data, received=form.received.data, price=form.price.data, payment=form.payment.data, debt=form.debt.data, comment=form.comment.data)
+        # Clear the Form
+        form.truck_id.data = ''
+        form.driver.data = ''
+        form.customer.data = ''
+        form.loading.data = ''
+        form.unloading.data = ''
+        form.received.data = ''
+        form.price.data = ''
+        form.payment.data = ''
+        form.debt.data = ''
+        form.comment.data = ''
+
+        # Add route data to database
+        db.session.add(route)
+        db.session.commit()
+
+        # Return a Message
+        flash("Route Submitted Successfully!")
+
+    # Redirect to the webpage
+    return render_template("add-route.html", form=form)
+
 
 
 # Update Database Record

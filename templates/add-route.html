@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}        
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+{% endfor%}
+
+<h1>Add Route...</h1>
+    <br>
+    <div class="shadow p-3 mb-5 bg-body rounded">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            {{ form.truck_id.label(class="form-label") }}
+            {{ form.truck_id(class="form-control") }}
+            <br>
+            {{ form.driver.label(class="form-label") }}
+            {{ form.driver(class="form-control") }}
+            <br>
+            {{ form.customer.label(class="form-label") }}
+            {{ form.customer(class="form-control") }}
+            <br>
+            {{ form.loading.label(class="form-label") }}
+            {{ form.loading(class="form-control") }}
+            <br>
+            {{ form.unloading.label(class="form-label") }}
+            {{ form.unloading(class="form-control") }}
+            <br>
+            {{ form.received.label(class="form-label") }}
+            {{ form.received(class="form-control") }}
+            <br>
+            {{ form.price.label(class="form-label") }}
+            {{ form.price(class="form-control") }}
+            <br>
+            {{ form.payment.label(class="form-label") }}
+            {{ form.payment(class="form-control") }}
+            <br>
+            {{ form.debt.label(class="form-label") }}
+            {{ form.debt(class="form-control") }}
+            <br>
+            {{ form.comment.label(class="form-label") }}
+            {{ form.comment(class="form-control", rows="3") }}
+            <br>
+            {{ form.submit(class="btn btn-secondary") }}
+        </form>
+    </div>
+{% endblock %}
