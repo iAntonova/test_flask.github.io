@@ -61,14 +61,18 @@ MIGRATE(macOS):
 MIGRATE(win):
 >flask db migrate -m 'added password field
 
+# (17) Add A Blog Post Model and Form 
+The class Posts(db.Model) was created -> migrate
+> python3 -m flask db migrate -m 'Add Routes Model'
+> python3 -m flask db upgrade
 
-(14) - Using Hashed Passwords For Registration 
-# password_hash not in db yet -> megrate
+# (14) - Using Hashed Passwords For Registration 
+password_hash not in db yet -> migrate
 > python3 -m flask db migrate -m 'added password field'
 > python3 -m flask db upgrade 
-# add fields to add_user.html -> app.py
+add fields to add_user.html -> app.py
 
-(13) - Hashing Passwords With Werkzeug
+# 13) - Hashing Passwords With Werkzeug
 flask shell
 from app import Users
 u = Users()
